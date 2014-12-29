@@ -3,8 +3,8 @@ This is a little library that allows you to easily compile templated HTML
 into the pile of hot garbage that HTML email clients require. It makes a
 few things easier:
 
-- Writing HTML (by using (Jade)[http://jade-lang.com/] or (EJS)[https://github.com/tj/ejs])
-- Inlining CSS (by using (Juice2)[https://github.com/andrewrk/juice]
+- Writing HTML (by using [Jade](http://jade-lang.com/) or [EJS](https://github.com/tj/ejs))
+- Inlining CSS (by using [Juice2](https://github.com/andrewrk/juice)
 
 For example, it will turn this:
 
