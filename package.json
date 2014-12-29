@@ -4,6 +4,15 @@
 	"scripts": {
 		"test": "node_modules/.bin/mocha -R spec tests"
 	},
+	"author": {
+		"name": "Tommy Montgomery",
+		"email": "tmont@tmont.com",
+		"url": "http://tmont.com/"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tmont/email-template-renderer.git"
+	},
 	"dependencies": {
 		"async": "0.9.0",
 		"juice2": "1.3.1"
