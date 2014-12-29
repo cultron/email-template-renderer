@@ -1,0 +1,16 @@
+{
+	"name": "email-template-renderer",
+	"version": "0.0.1",
+	"scripts": {
+		"test": "node_modules/.bin/mocha -R spec tests"
+	},
+	"dependencies": {
+		"async": "0.9.0",
+		"juice2": "1.3.1"
+	},
+	"devDependencies": {
+		"mocha": "2.1.0",
+		"should": "4.4.2",
+		"jade": "1.8.2"
+	}
+}
