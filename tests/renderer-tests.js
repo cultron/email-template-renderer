@@ -41,8 +41,11 @@ describe('Renderer', function() {
 				result.should.have.property('index');
 				var expected = '\n\
 <html>\n\
+  <head>\n\
+    \n\
+  </head>\n\
   <body>\n\
-    <p>Hello world</p>\n\
+    <p style="color: red;">Hello world</p>\n\
   </body>\n\
 </html>\n';
 
