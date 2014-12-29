@@ -1,4 +1,7 @@
 # HTML email templates
+
+[![Build Status](https://travis-ci.org/tmont/email-template-renderer.png)](https://travis-ci.org/tmont/email-template-renderer)
+
 This is a little library that allows you to easily compile templated HTML
 into the pile of hot garbage that HTML email clients require. It makes a
 few things easier:
