@@ -1,5 +1,5 @@
 var should = require('should'),
-	Renderer = require('../src/email-template-renderer'),
+	Renderer = require('../'),
 	path = require('path');
 
 describe('Renderer', function() {
