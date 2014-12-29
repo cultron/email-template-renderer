@@ -11,6 +11,7 @@
 	"devDependencies": {
 		"mocha": "2.1.0",
 		"should": "4.4.2",
-		"jade": "1.8.2"
+		"jade": "1.8.2",
+		"ejs": "1.0.0"
 	}
 }

@@ -20,7 +20,13 @@ var fs = require('fs'),
             ext: 'ejs',
             regex: /\.ejs$/,
             compile: function(contents, filePath) {
-                return require('ejs')(contents);
+	            var options = {
+		            pretty: true,
+		            compileDebug: true,
+		            filename: filePath
+	            };
+
+                return require('ejs').compile(contents, options);
             }
         },
         html: {

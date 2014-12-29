@@ -58,4 +58,33 @@ describe('Renderer', function() {
 			done(err);
 		});
 	});
+
+	it('should render ejs template', function(done) {
+		var dir = dataDir + '/ejs';
+
+		var renderer = new Renderer(dir, 'ejs'),
+			locals = { hello: 'world' };
+
+		renderer.render('test1', locals, function(err, result) {
+			try {
+				should.not.exist(err);
+				result.should.have.property('index');
+				var expected = '<html>\n\
+	<body>\n\
+		<p>Hello world</p>\n\
+	</body>\n\
+</html>\n\n';
+
+				result.index.should.equal(expected);
+
+				renderer.should.have.property('templates');
+				renderer.templates.should.have.property('test1');
+				renderer.templates.should.have.property('test2');
+			} catch (e) {
+				err = e;
+			}
+
+			done(err);
+		});
+	});
 });
