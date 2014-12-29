@@ -8,7 +8,7 @@ into the pile of hot garbage that HTML email clients require. It makes a
 few things easier:
 
 - Writing HTML (by using [Jade](http://jade-lang.com/) or [EJS](https://github.com/tj/ejs))
-- Inlining CSS (by using [Juice2](https://github.com/andrewrk/juice)
+- Inlining CSS (by using [Juice2](https://github.com/andrewrk/juice))
 - Managing lots o' templates (by requiring a specific directory structure)
 
 For example, it will turn this:
