@@ -92,3 +92,7 @@ above:
     html: '<a style="color: blue; text-decoration: underline;" href="http://example.com/asdf">Click here</a> to reset your password.'
 }
 ```
+
+*NOTE* You will have to load the template library yourself. This library does not have any
+dependencies on template libraries, so it's up to you to ensure that the templating language
+is being loaded.
