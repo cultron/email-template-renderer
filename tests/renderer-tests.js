@@ -13,26 +13,10 @@ describe('Renderer', function() {
 		(create).should.throwError('A template directory is required');
 	});
 
-	it('should default to html if no type is given', function() {
-		var renderer = new Renderer('foo');
-
-		renderer.should.have.property('type');
-		renderer.type.should.have.property('ext', 'html');
-	});
-
-	it('should use custom type', function() {
-		var renderer = new Renderer('foo', {
-			hello: 'world'
-		});
-
-		renderer.should.have.property('type');
-		renderer.type.should.have.property('hello', 'world');
-	});
-
 	it('should render jade template', function(done) {
 		var dir = dataDir + '/jade';
 
-		var renderer = new Renderer(dir, 'jade'),
+		var renderer = new Renderer(dir),
 			locals = { hello: 'world' };
 
 		renderer.render('test1', locals, function(err, result) {
@@ -65,7 +49,7 @@ describe('Renderer', function() {
 	it('should render ejs template', function(done) {
 		var dir = dataDir + '/ejs';
 
-		var renderer = new Renderer(dir, 'ejs'),
+		var renderer = new Renderer(dir),
 			locals = { hello: 'world' };
 
 		renderer.render('test1', locals, function(err, result) {

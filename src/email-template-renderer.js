@@ -1,61 +1,59 @@
 var fs = require('fs'),
 	path = require('path'),
 	juice = require('juice2'),
-	async = require('async'),
-	extMap = {
-		jade: {
-			ext: 'jade',
-			regex: /\.jade$/,
-			compile: function(contents, filePath) {
-				var options = {
-					pretty: true,
-					compileDebug: true,
-					filename: filePath
-				};
+	async = require('async');
 
-				return require('jade').compile(contents, options);
-			}
-		},
-		ejs: {
-			ext: 'ejs',
-			regex: /\.ejs$/,
-			compile: function(contents, filePath) {
-				var options = {
-					pretty: true,
-					compileDebug: true,
-					filename: filePath
-				};
-
-				return require('ejs').compile(contents, options);
-			}
-		},
-		html: {
-			ext: 'html',
-			regex: /\.html$/,
-			compile: function(contents, filePath) {
-				return function(locals) {
-					return contents;
-				};
-			}
-		}
-	};
-
-function EmailTemplateRenderer(templatesDir, type) {
+function EmailTemplateRenderer(templatesDir) {
 	if (!templatesDir) {
 		throw new Error('A template directory is required');
 	}
-	if (typeof(type) === 'string') {
-		this.type = extMap[type];
-	} else if (!type) {
-		this.type = extMap.html;
-	} else {
-		this.type = type;
-	}
 
-	this.templatesDir = templatesDir || null;
+	this.templatesDir = templatesDir;
 	this.templates = {};
 	this.initialized = false;
+
+	this.typeMap = {};
+
+	this
+		.registerType('jade', /\.jade$/, true, function(contents, filePath) {
+			var options = {
+				pretty: true,
+				compileDebug: true,
+				filename: filePath
+			};
+
+			return require('jade').compile(contents, options);
+		})
+		.registerType('ejs', /\.ejs$/, true, function(contents, filePath) {
+			var options = {
+				pretty: true,
+				compileDebug: true,
+				filename: filePath
+			};
+
+			return require('ejs').compile(contents, options);
+		})
+		.registerType('html', /\.html$/, true, function(contents) {
+			return function() {
+				return contents;
+			};
+		})
+		.registerType('txt', /\.txt$/, false, function(contents) {
+			return function() {
+				return contents;
+			};
+		});
 }
+
+EmailTemplateRenderer.prototype.registerType = function(name, regex, isJuicy, compile) {
+	this.typeMap[name] = {
+		juicy: !!isJuicy,
+		compile: compile,
+		regex: regex
+	};
+
+	return this;
+};
 
 EmailTemplateRenderer.prototype.init = function(callback) {
 	if (this.initialized) {
@@ -79,20 +77,24 @@ EmailTemplateRenderer.prototype.init = function(callback) {
 					return;
 				}
 
-				var typeData = self.type;
-
 				function processFile(file, next) {
-					if (!typeData.regex.test(file)) {
+					var typeDataKey = Object.keys(self.typeMap)
+						.filter(function(name) {
+							return self.typeMap[name].regex.test(file);
+						})[0];
+
+					if (!typeDataKey) {
 						next();
 						return;
 					}
 
-					var contentType = path.basename(file, '.' + typeData.ext),
-						filePath = path.join(dirPath, file);
+					var typeData = self.typeMap[typeDataKey],
+						templateName = path.basename(file, path.extname(file)),
+						filePath = path.join(dirPath, file),
+						options = {
+							encoding: 'utf8'
+						};
 
-					var options = {
-						encoding: 'utf8'
-					};
 					fs.readFile(filePath, options, function(err, contents) {
 						if (err) {
 							next(err);
@@ -107,7 +109,8 @@ EmailTemplateRenderer.prototype.init = function(callback) {
 							self.templates[name].push({
 								path: filePath,
 								tmpl: typeData.compile(contents, filePath),
-								type: contentType
+								name: templateName,
+								juicy: !!typeData.juicy
 							});
 
 							next();
@@ -141,7 +144,7 @@ EmailTemplateRenderer.prototype.init = function(callback) {
 		});
 	}
 
-	async.waterfall([getDirectories, compileTemplates], callback);
+	async.waterfall([ getDirectories, compileTemplates ], callback);
 };
 
 EmailTemplateRenderer.prototype.render = function(template, locals, callback) {
@@ -161,9 +164,16 @@ EmailTemplateRenderer.prototype.render = function(template, locals, callback) {
 		var result = {};
 
 		function render(data, next) {
-			var html = data.tmpl(locals);
-			if (data.type === 'text') {
-				result[data.type] = html;
+			var key = data.name;
+			try {
+				var content = data.tmpl(locals);
+			} catch (e) {
+				next(e);
+				return;
+			}
+
+			if (!data.juicy) {
+				result[key] = content;
 				next();
 				return;
 			}
@@ -172,8 +182,8 @@ EmailTemplateRenderer.prototype.render = function(template, locals, callback) {
 				url: 'file://' + data.path
 			};
 
-			juice.juiceContent(html, options, function(err, html) {
-				result[data.type] = html;
+			juice.juiceContent(content, options, function(err, html) {
+				result[key] = html;
 				next(err);
 			});
 		}
