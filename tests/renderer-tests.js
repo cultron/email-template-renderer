@@ -74,4 +74,25 @@ describe('Renderer', function() {
 			done(err);
 		});
 	});
+
+	it('should render multiple template languages in same directory', function(done) {
+		var dir = dataDir + '/mixed';
+
+		var renderer = new Renderer(dir),
+			locals = { hello: 'world' };
+
+		renderer.render('foo', locals, function(err, result) {
+			try {
+				should.not.exist(err);
+				result.should.have.property('ejs');
+				result.should.have.property('text');
+				result.ejs.should.equal('<html><body>Hello world\n</body></html>');
+				result.text.should.equal('Hello world!');
+			} catch (e) {
+				err = e;
+			}
+
+			done(err);
+		});
+	});
 });
