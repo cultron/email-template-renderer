@@ -7,7 +7,8 @@ This is a little library that allows you to easily compile templated HTML
 into the pile of hot garbage that HTML email clients require. It makes a
 few things easier:
 
-- Writing HTML (by using [Jade](http://jade-lang.com/) or [EJS](https://github.com/tj/ejs))
+- Writing HTML (by using [Jade](http://jade-lang.com/), [EJS](https://github.com/tj/ejs) or 
+  [nunjucks](http://mozilla.github.io/nunjucks/)). See the tests for examples of each.
 - Inlining CSS (by using [Juice2](https://github.com/andrewrk/juice))
 - Managing lots o' templates (by requiring a specific directory structure)
 
@@ -46,7 +47,7 @@ by doing this:
 
 ```javascript
 var Renderer = require('email-template-renderer'),
-    renderer = new Renderer('/my/templates', 'jade');
+    renderer = new Renderer('/my/templates');
     
 renderer.render('examples', { hello: 'world' }, function(err, result) {
     if (err) {

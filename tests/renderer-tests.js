@@ -95,4 +95,23 @@ describe('Renderer', function() {
 			done(err);
 		});
 	});
+
+	it('should render nunjucks template', function(done) {
+		var dir = dataDir + '/nunjucks';
+
+		var renderer = new Renderer(dir),
+			locals = { hello: 'world' };
+
+		renderer.render('ninja', locals, function(err, result) {
+			try {
+				should.not.exist(err);
+				result.should.have.property('hello');
+				result.hello.should.equal('<html><body>hello world\n\n\nhello world\n\n</body></html>');
+			} catch (e) {
+				err = e;
+			}
+
+			done(err);
+		});
+	});
 });

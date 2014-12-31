@@ -33,9 +33,25 @@ function EmailTemplateRenderer(templatesDir) {
 
 			return require('ejs').compile(contents, options);
 		})
-		.registerType('html', /\.html$/, true, function(contents) {
-			return function() {
-				return contents;
+		.registerType('nunjucks', /\.html$/, true, function(contents, filePath) {
+			var nunjucks = require('nunjucks'),
+				basePath = path.dirname(filePath);
+
+			var LocalPathLoader = nunjucks.Loader.extend({
+				getSource: function(name) {
+					var fileName = path.resolve(path.join(basePath, name));
+					var contents = fs.readFileSync(fileName, { encoding: 'utf8' });
+					return {
+						src: contents,
+						path: fileName
+					};
+				}
+			});
+
+			var env = new nunjucks.Environment(new LocalPathLoader());
+			var tmpl = require('nunjucks').compile(contents, env, filePath);
+			return function(locals) {
+				return tmpl.render(locals);
 			};
 		})
 		.registerType('txt', /\.txt$/, false, function(contents) {
