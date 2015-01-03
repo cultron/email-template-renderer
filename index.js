@@ -49,7 +49,7 @@ function EmailTemplateRenderer(templatesDir) {
 			});
 
 			var env = new nunjucks.Environment(new LocalPathLoader());
-			var tmpl = require('nunjucks').compile(contents, env, filePath);
+			var tmpl = nunjucks.compile(contents, env, filePath);
 			return function(locals) {
 				return tmpl.render(locals);
 			};
