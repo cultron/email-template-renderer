@@ -121,6 +121,7 @@ EmailTemplateRenderer.prototype.init = function(callback) {
 							self.templates[name] = [];
 						}
 
+						var compileError = null;
 						try {
 							self.templates[name].push({
 								path: filePath,
@@ -128,11 +129,11 @@ EmailTemplateRenderer.prototype.init = function(callback) {
 								name: templateName,
 								juicy: !!typeData.juicy
 							});
-
-							next();
 						} catch (e) {
-							next(e);
+							compileError = e;
 						}
+
+						next(compileError);
 					});
 				}
 
